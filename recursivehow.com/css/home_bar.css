@@ -1,0 +1,11 @@
+.homeBar{
+	background: #4d4dff;
+	border: none;
+	padding: 15px;
+}
+.homeBarText{
+	color: #e65c00; 
+	text-align: left;
+	font-family: "Lucida Console";
+	font-size: 2.5em;
+}

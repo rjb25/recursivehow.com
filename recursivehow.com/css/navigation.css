@@ -1,0 +1,77 @@
+.navigationBar {
+	position: relative;
+	background: #3366ff;
+	width: *;
+	height: 7%;
+	left:0;
+	right:0;
+	top:0;
+
+}
+.navigationFiller{
+	position: relative;
+	width: *;
+	height: 7%;
+	left:0;
+	right:0;
+	top:0;
+}
+
+*{
+	margin: 0;
+	padding: 0;
+}
+.navigationDropdownSection{
+	cursor: default;
+}
+.navigationSection{
+	text-align: center;
+	float: left;
+	width: 8%;
+	height: 100%;
+
+	background: #ff751a;
+}
+.navigationDropdownLink{
+	font-family: "Lucida Console";
+	background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+	display: inline-block;
+	color: #4d4dff;
+	width: 100%;
+	font-size: 2vw;
+	text-decoration: none;
+
+}
+.navigationLink{
+	font-family: "Lucida Console";
+	display: inline-block;
+	color: #4d4dff;
+	width: 100%;
+	font-size: 2vw;
+	text-decoration: none;
+
+}
+.navigationSection:hover {
+	background: #E9967A;
+}
+.navigationLink:before {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  height: 108%;
+}
+.right {
+	float: right;
+}
+.sticky {
+	position: fixed;
+	top:0;
+	left:0;
+	right:0;
+	z-index:0 ;
+}
