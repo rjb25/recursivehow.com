@@ -18,23 +18,23 @@ $_SESSION['form_token'] = $form_token;
 <body>
 <center><h2>Add User</h2></center>
 <form name="login" action="adduser_submit.php" method="post" onsubmit="return addUserValidation()">
-<div id="div">
-<center><?php if(isset($_SESSION['error_message'])) echo $_SESSION['error_message'] ;?></center>
-<label for="username">Username</label>
-<input type="text" id="username" name="username" value="" maxlength="20" />
+	<div id="div">
+		<center><?php if(isset($_SESSION['error_message'])) echo $_SESSION['error_message'] ;?></center>
+		<label for="username">Username</label>
+		<input type="text" id="username" name="username" value="" maxlength="20" />
 
-<label for="password">Password</label>
-<input type="password" id="password" name="password" value="" maxlength="20" />
+		<label for="password">Password</label>
+		<input type="password" id="password" name="password" value="" maxlength="20" />
 
-<label for="confirmpassword">Confirmation</label>
-<input type="password" id="confirmation" name="confirmation" value="" maxlength="20" />
+		<label for="confirmpassword">Confirmation</label>
+		<input type="password" id="confirmation" name="confirmation" value="" maxlength="20" />
 
-<input type="hidden" name="form_token" value="<?php echo $form_token; ?>" />
+		<input type="hidden" name="form_token" value="<?php echo $form_token; ?>" />
 
-<input type="submit" value="Add User" />
+		<input type="submit" value="Add User" />
 
-<center><p><a href="http://recursivehow.com/">Log In</a></p></center>
-</div>
+		<center><p><a href="http://recursivehow.com/">Log In</a></p></center>
+	</div>
 </form>
 
 </body>

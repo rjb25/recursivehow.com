@@ -35,11 +35,11 @@
 .navigationDropdownLink{
 	font-family: "Lucida Console";
 	background-color: Transparent;
-    background-repeat:no-repeat;
-    border: none;
-    cursor:pointer;
-    overflow: hidden;
-    outline:none;
+	background-repeat:no-repeat;
+	border: none;
+	cursor:pointer;
+	overflow: hidden;
+	outline:none;
 	display: inline-block;
 	color: #4d4dff;
 	width: 100%;
@@ -60,10 +60,10 @@
 	background: #E9967A;
 }
 .navigationLink:before {
-  content: '';
-  display: inline-block;
-  vertical-align: middle;
-  height: 108%;
+	content: '';
+	display: inline-block;
+	vertical-align: middle;
+	height: 108%;
 }
 .right {
 	float: right;

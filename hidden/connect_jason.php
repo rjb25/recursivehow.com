@@ -3,7 +3,7 @@
 
         $mysql_username = '**user**';
 
-        $mysql_password = '**password**';
+        $mysql_password = '**pass**';
 
         $mysql_dbname = 'jason_database';
 

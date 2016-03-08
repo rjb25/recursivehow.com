@@ -12,7 +12,7 @@
 
 <form action="login_submit.php" name="login" method="post" onsubmit="return loginValidation()">
 	<div id = "div">
-		
+
 		<center><?php if(isset($_SESSION['error_message'])) echo $_SESSION['error_message'] ;?></center>
 		<label for="username">Username</label>
 		<input type="text" id="username" name="username" value="" maxlength="20" />
