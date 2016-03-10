@@ -1,4 +1,4 @@
-(document).ready(function() {
+$(document).ready(function() {
 	var stickyNavTop = $('.navigationBar').offset().top;
 	var stickyNav = function(){
 		var home = document.getElementById('home');
@@ -25,8 +25,3 @@
 		stickyNav();
 	});
 });
-
-function doSomething() {
-	$.post("level.php");
-	return false;
-}
