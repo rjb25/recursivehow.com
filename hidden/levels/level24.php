@@ -17,7 +17,7 @@
 var canvas = document.getElementById("myCanvas");
 var message = document.getElementById("keycode");
 var ctx = canvas.getContext("2d");
-
+//I AM THOMAS MARTIN FUCKING SUTTER
 var mouseX = canvas.width/2;
 var mouseY = canvas.height/2;
 
