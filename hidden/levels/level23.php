@@ -28,7 +28,7 @@
             <script>
                 //canvas
                 var canvas = document.getElementById("myCanvas");
-                var message = document.getElementById("keycode");
+          var message = document.getElementById("keycode");
                 var ctx = canvas.getContext("2d");
                 //mouse
                 var mouseX = canvas.width / 2;
@@ -59,31 +59,37 @@
                 var playerCircleShots = [];
                 //anything that has methods constantly invoked
                 var instances = [rectangles, spitters, players, playerCircleShots];
-                //*******METHODS*********
-                var circleBounce = function() {
-                    for (var j = 0; j < instances.length; j++) {
+								//*******METHODS*********
+//death methods
+                var healthDie = function() {
+                }
+                var distanceDie = function() {
+                }
+//bounce methods
+								var circleBounce = function() {
+										for (var j = 0; j < instances.length; j++) {
+														if (instances[j][0].solid == true) {
+												for (var i = 0; i < instances[j].length; i++) {
+																//checking will hit
+																if (this.x + this.dx < instances[j][i].x + instances[j][i].width + this.radius && this.x + this.dx > instances[j][i].x - this.radius) {
+																		if (this.y + this.dy < instances[j][i].y + instances[j][i].height + this.radius && this.y + this.dy > instances[j][i].y - this.radius) {
+																				instances[j][i].health--;
+																				//is above or below currently
+																				if (this.x < instances[j][i].x + instances[j][i].width + this.radius && this.x > instances[j][i].x - this.radius) {
 
-                        for (var i = 0; i < instances[j].length; i++) {
-                            if (instances[j][i].solid = true;) {
-                                //checking will hit
-                                if (this.x + this.dx < [i].x + instances[j][i].width + this.radius && this.x + this.dx > instances[j][i].x - this.radius) {
-                                    if (this.y + this.dy < instances[j][i].y + instances[j][i].height + this.radius && this.y + this.dy > instances[j][i].y - this.radius) {
-                                        instances[j][i].health--;
-                                        //is above or below currently
-                                        if (this.x < instances[j][i].x + instances[j][i].width + this.radius && this.x > instances[j][i].x - this.radius) {
-                                            this.dy *= -1;
-                                        }
-                                        //is to the side currently
-                                        if (this.y < instances[j][i].y + instances[j][i].height + this.radius && this.y > instances[j][i].y - this.radius) {
-                                            this.dx *= -1;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                };
-
+																						this.dy *= -1;
+																				}
+																				//is to the side currently
+																				if (this.y < instances[j][i].y + instances[j][i].height + this.radius && this.y > instances[j][i].y - this.radius) {
+																						this.dx *= -1;
+																				}
+																		}
+																}
+														}
+												}
+										}
+								};
+//draw methods
                 var drawRectangle = function() {
                     if (this.x < viewMaxX && this.x > viewMinX - this.width && this.y < viewMaxY && this.y > viewMinY - this.height) {
                         ctx.beginPath();
@@ -136,14 +142,6 @@
                 };
                 Spitter.prototype.draw = drawRectangle;
 
-                //changes made here
-                /*
-                Player.prototype.setXY = function () {
-                        this.x = ((viewMaxX-viewMinX)/2) - (this.width/2);
-                        this.y = ((viewMaxY-viewMinY)/2) - (this.height/2);
-                	message.innerHTML = this.x + "x " + this.y + "y ";
-                }
-                */
 
                 //SPITTER CODE ENDS HERE
 
@@ -165,12 +163,6 @@
                 function shoot() {
                     playerCircleShots.push(new PlayerCircleShot());
                 }
-                /*function bounceProjectiles(){
-                	for (var i = 0; i < projectiles.length; i++){
-                		projectiles[i].bounce();
-                	}
-                }
-                */
                 PlayerCircleShot.prototype.bounce = circleBounce;
 
                 PlayerCircleShot.prototype.draw = drawCircle;
@@ -222,37 +214,13 @@
                 function update() {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     move();
+										viewUpdate();
                     drawCursor();
                     invokeOnInstances("draw");
                     invokeOnInstances("bounce");
-                    //isAlive();
-                    //typesUpdate();
                 }
                 var types = [rectangles, spitters];
 
-                function typesUpdate() {
-                    draw();
-                    //bouncing off rectangles
-                    bounce();
-                    isAlive();
-                    for (var p = 0; p < projectiles.length; p++) {
-                        for (var i = 0; i < types[j].length; i++) {
-                            if (projectiles[p].x + projectiles[p].dx < types[j][i].x + types[j][i].width + projectiles[p].radius && projectiles[p].x + projectiles[p].dx > types[j][i].x - projectiles[p].radius) {
-                                if (projectiles[p].y + projectiles[p].dy < types[j][i].y + types[j][i].height + projectiles[p].radius && projectiles[p].y + projectiles[p].dy > types[j][i].y - projectiles[p].radius) {
-                                    types[j][i].health--;
-                                    //is above or below currently 
-                                    if (projectiles[p].x < types[j][i].x + types[j][i].width + projectiles[p].radius && projectiles[p].x > types[j][i].x - projectiles[p].radius) {
-                                        projectiles[p].dy *= -1;
-                                    }
-                                    //is to the side currently 
-                                    if (projectiles[p].y < types[j][i].y + types[j][i].height + projectiles[p].radius && projectiles[p].y > types[j][i].y - projectiles[p].radius) {
-                                        projectiles[p].dx *= -1;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
 
                 function invokeOnInstances(method) {
                     for (var i = 0; i < instances.length; i++) {
@@ -287,24 +255,8 @@
                 //END DRAW FUNCTIONS
                 //*******BOUNCE functions*****
 
-                function bounce() {
-                    //going through types
-                    for (var j = 0; j < drawables.length; j++) {
-                        //drawing
-                        for (var i = 0; i < drawables[j].length; i++) {
-                            drawables[j][i].draw();
-                        }
-                    }
-                }
                 //END BOUNCE FUNCTIONS
                 //*******IS ALIVE FUNCTIONS*****
-                function isAlive() {
-                    for (var j = 0; j < livings.length; j++) {
-                        for (var i = 0; i < livings[j].length; i++) {
-                            livings[j][i].isAlive();
-                        }
-                    }
-                }
 
                 //END IS ALIVE FUNCTIONS
 
@@ -357,16 +309,16 @@
                 document.addEventListener("keyup", keyup, false);
 
                 function keydown(e) {
-                    if (e.keyCode == 39) {
+                    if (e.keyCode == 68) {
                         rightPressed = true;
                     }
-                    if (e.keyCode == 37) {
+                    if (e.keyCode == 65) {
                         leftPressed = true;
                     }
-                    if (e.keyCode == 38) {
+                    if (e.keyCode == 87) {
                         upPressed = true;
                     }
-                    if (e.keyCode == 40) {
+                    if (e.keyCode == 83) {
                         downPressed = true;
                     }
                     if (e.keyCode == 82) {
@@ -377,16 +329,16 @@
                 }
 
                 function keyup(e) {
-                    if (e.keyCode == 39) {
+                    if (e.keyCode == 68) {
                         rightPressed = false;
                     }
-                    if (e.keyCode == 37) {
+                    if (e.keyCode == 65) {
                         leftPressed = false;
                     }
-                    if (e.keyCode == 38) {
+                    if (e.keyCode == 87) {
                         upPressed = false;
                     }
-                    if (e.keyCode == 40) {
+                    if (e.keyCode == 83) {
                         downPressed = false;
                     }
                 }
