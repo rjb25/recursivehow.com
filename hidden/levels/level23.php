@@ -1,4 +1,3 @@
-//test
 <?php include('session.php'); ?>
 <html>
 
@@ -23,7 +22,7 @@
 <body>
     <button onclick="setInterval(update,5);">start</button>
 
-    <canvas id="myCanvas" width="680" height="320"></canvas>
+    <canvas id="myCanvas" width="980" height="420"></canvas>
     <p id="keycode">
         <p>
             <script>
@@ -34,6 +33,7 @@
                 //mouse
                 var mouseX = canvas.width / 2;
                 var mouseY = canvas.height / 2;
+								var mouseDown = false;
                 //keyboard
                 var upPressed = false;
                 var downPressed = false;
@@ -62,13 +62,22 @@
                 var instances = [rectangles, spitters, players, playerCircleShots];
 								//*******METHODS*********
 //death methods
-                var healthDie = function() {
+                function healthDie(containingArray) { return function(){
+													if(this.health < 1){
+															containingArray.splice(containingArray.indexOf(this), 1);
+												}
+										}
+                };
+                function distanceDie(containingArray){return function() {
+									if(getDistance(this.startX, this.startY, this.x,this.y) > this.range){	
+											containingArray.splice(containingArray.indexOf(this), 1);
+										}
                 }
-                var distanceDie = function() {
-                }
+	}
 //bounce methods
-								var circleBounce = function() {
+								 function circleBounce(degree) {return function(){
 										for (var j = 0; j < instances.length; j++) {
+											if(instances [j].length >0){
 														if (instances[j][0].solid == true) {
 												for (var i = 0; i < instances[j].length; i++) {
 																//checking will hit
@@ -77,15 +86,24 @@
 																				instances[j][i].health--;
 																				//is above or below currently
 																				if (this.x < instances[j][i].x + instances[j][i].width + this.radius && this.x > instances[j][i].x - this.radius) {
-
+																					if(degree == true){
+																							this.angle*= -1;
+																							}else{
 																						this.dy *= -1;
+																							}
 																				}
 																				//is to the side currently
 																				if (this.y < instances[j][i].y + instances[j][i].height + this.radius && this.y > instances[j][i].y - this.radius) {
+																					if(degree == true){
+																								this.angle = 180 -this.angle;
+																							}else{
 																						this.dx *= -1;
+																							}
 																				}
 																		}
+}
 																}
+}
 														}
 												}
 										}
@@ -109,6 +127,33 @@
                         ctx.closePath();
                     }
                 };
+//firing methods
+								function fireMouseDown(shotType, shotArray) { return function(){
+									if(mouseDown){
+                    shotArray.push(new shotType);
+									}
+                }};
+//warp methods
+								function degreeWarp(amount){
+										return function(){
+											this.angle+=amount;
+										}
+								}
+//update methods
+								function angleToDxDy(){	
+										return function(){
+                    this.radians = this.angle * (Math.PI / 180);
+                    this.dx = (this.speed * Math.cos(this.radians));
+                    this.dy = (this.speed * Math.sin(this.radians));
+										}
+								}
+/*
+									if(mouseDown){
+                    playerCircleShots.push(new PlayerCircleShot());
+									}
+								};
+*/
+														
 
                 //END METHODS HERE
                 //**************PLAYER CLASS************
@@ -122,7 +167,9 @@
                     this.color = color;
                 };
 
+								Player.prototype.fire = fireMouseDown(PlayerCircleShot, playerCircleShots);
                 Player.prototype.draw = drawRectangle;
+                Player.prototype.isAlive = healthDie(players);
 
                 //PLAYER CODE ENDS HERE
                 //**************Spitter CLASS************
@@ -138,20 +185,23 @@
                     this.reload = 0;
                 };
 
-                Spitter.prototype.fire = function() {
-                    projectiles.push(new Projectile("bad", this.x, this.y));
-                };
+                Spitter.prototype.isAlive = healthDie(spitters); 
                 Spitter.prototype.draw = drawRectangle;
+								//Spitter.prototype.fire = fireAtPlayer(SpitterBullet, spitterBullets);
 
 
                 //SPITTER CODE ENDS HERE
 
                 //********PLAYER CIRCLE SHOT CLASS***********
-                function PlayerCircleShot() {
+                function PlayerCircleShot(whose) {
+										this.whose = whose;
                     this.x = player.x + player.width / 2;
                     this.y = player.y + player.height / 2;
+										this.startX = this.x;
+										this.startY = this.y;
                     this.radius = 2.5;
                     this.speed = 1.5;
+										this.range = 1000;
                     //and here
                     this.differenceY = getGameY(mouseY) - this.y;
                     this.differenceX = getGameX(mouseX) - this.x;
@@ -160,14 +210,11 @@
                     this.dx = (this.speed * Math.cos(this.radians));
                     this.dy = (this.speed * Math.sin(this.radians));
                 };
-				//TEST^^^
-
-                function shoot() {
-                    playerCircleShots.push(new PlayerCircleShot());
-                }
-                PlayerCircleShot.prototype.bounce = circleBounce;
-
+								PlayerCircleShot.prototype.isAlive = distanceDie(playerCircleShots);
+                PlayerCircleShot.prototype.bounce = circleBounce(true);
                 PlayerCircleShot.prototype.draw = drawCircle;
+								PlayerCircleShot.prototype.warp = degreeWarp(2);
+								PlayerCircleShot.prototype.update = angleToDxDy(1);
                 //PROJECTILE ENDS HERE
                 //*****RectangleClass*********
                 function Rectangle(x, y, width, height, color, health) {
@@ -177,9 +224,10 @@
                     this.width = width;
                     this.height = height;
                     this.color = color || "blue";
-                    this.health = health || 10;
+                    this.health = health || 100000;
                 }
                 Rectangle.prototype.draw = drawRectangle;
+                Rectangle.prototype.isAlive = healthDie(rectangles); 
 
                 //RECTANGLE ENDS HERE
                 //********CURSOR*********
@@ -219,7 +267,11 @@
 										viewUpdate();
                     drawCursor();
                     invokeOnInstances("draw");
+                    invokeOnInstances("update");
                     invokeOnInstances("bounce");
+                    invokeOnInstances("isAlive");
+                    invokeOnInstances("fire");
+                    invokeOnInstances("warp");
                 }
                 var types = [rectangles, spitters];
 
@@ -233,34 +285,6 @@
                         }
                     }
                 }
-
-                //*****Draw functions****
-                function draw() {
-                    //going through types
-                    for (var j = 0; j < drawables.length; j++) {
-                        //drawing
-                        for (var i = 0; i < drawables[j].length; i++) {
-                            drawables[j][i].draw();
-                        }
-                    }
-                }
-                var drawCircleInGame = function() {
-                    if (this.x < viewMaxX && this.x > viewMinX - this.width && this.y < viewMaxY && this.y > viewMinY - this.height) {
-                        ctx.beginPath();
-                        ctx.rect(getCanvasX(this.x), getCanvasY(this.y), this.width, /*correcting for 0 index*/ -this.height);
-                        ctx.fillStyle = this.color;
-                        ctx.fill();
-                        ctx.closePath();
-                    }
-                }
-
-                //END DRAW FUNCTIONS
-                //*******BOUNCE functions*****
-
-                //END BOUNCE FUNCTIONS
-                //*******IS ALIVE FUNCTIONS*****
-
-                //END IS ALIVE FUNCTIONS
 
                 function viewUpdate() {
                     if (rightPressed) {
@@ -285,6 +309,10 @@
                     }
                 }
 
+function getDistance(x1, y1, x2, y2) {
+	var distance = Math.sqrt(Math.pow((y2-y1),2)+(Math.pow((x2-x1),2) ));
+	return distance;
+}
                 function getGameX(x) {
                     return x + viewMinX;
                 }
@@ -305,8 +333,14 @@
                         return (canvas.height - (gameY - viewMinY));
                     }
                 }
-
-                document.addEventListener("click", shoot, false);
+                function mouseDownHandler() {
+										mouseDown = true;
+                }
+								function mouseUpHandler(){
+										mouseDown = false;
+								}
+                document.addEventListener("mousedown", mouseDownHandler, false);
+                document.addEventListener("mouseup", mouseUpHandler, false);
                 document.addEventListener("keydown", keydown, false);
                 document.addEventListener("keyup", keyup, false);
 
